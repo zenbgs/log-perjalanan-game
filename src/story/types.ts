@@ -39,6 +39,24 @@ export type Action =
   /** Akhir chapter. Narasi penutup, "Bersambung", kembali ke judul. */
   | { end: Line[] };
 
+/** Isi layar monitor di WarnetScene. Satu set per chapter. */
+export interface WarnetText {
+  title: string;
+  farmHint: string;
+  itemFound: string;
+  chatBuy: { from: string; text: string };
+  sold: string;
+  chatJoki: { from: string; text: string };
+  /** Label tombol untuk langkah progres (jokiin, enchant). */
+  jokiHint: string;
+  /** Label bilah progres di bawah layar. */
+  jokiStatus: string;
+  levelUp: string;
+  chatThanks: { from: string; text: string };
+  logout: string;
+  intro: Line[];
+}
+
 export type Has = (flag: string) => boolean;
 
 export interface NpcDef {
@@ -75,6 +93,8 @@ export interface MapDef {
   endMusic?: Track;
   /** Warna lapisan suasana (misalnya malam yang sunyi). */
   tint?: (has: Has) => { color: number; alpha: number } | undefined;
+  /** Sumber cahaya hangat (api unggun) yang tetap terang di atas lapisan malam. */
+  glow?: At[];
   /** Kecepatan jalan pemain, misalnya melambat saat menemani seseorang. */
   playerSpeed?: (has: Has) => number | undefined;
   spawn: At;

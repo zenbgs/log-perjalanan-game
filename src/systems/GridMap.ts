@@ -11,7 +11,7 @@ export const INDOOR_BASE = 1000;
 export const indoor = (i: number) => INDOOR_BASE + i;
 
 /** Hand-drawn props in `props.png`, in strip order. See tools/pack_assets.py. */
-export const PROP_FRAME = { tv: 0, walker: 1, wheelchair: 2, toys: 3, mie: 4, gitar: 5, nasi: 6 } as const;
+export const PROP_FRAME = { tv: 0, walker: 1, wheelchair: 2, toys: 3, mie: 4, gitar: 5, nasi: 6, api: 7 } as const;
 export type PropName = keyof typeof PROP_FRAME;
 
 export interface MapProp {

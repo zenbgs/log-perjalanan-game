@@ -212,6 +212,25 @@ PROPS = {
         "................",
         "................",
     ],
+    # Campfire (api unggun) in Lembang: flames over crossed logs, ringed by stones.
+    "api": [
+        "................",
+        "................",
+        "................",
+        ".......Y........",
+        "......YY........",
+        "......YRY.......",
+        ".....YRRY..Y....",
+        ".....RRYR.YY....",
+        "....RRYYRRYR....",
+        "....RYYYYRRR....",
+        "...KRRYYYYRK....",
+        "..NNNKRRRKNNN...",
+        ".GNOOONNNOOONG..",
+        "..GNNOOOOONNG...",
+        "...GGNNNNNGG....",
+        "................",
+    ],
 }
 
 

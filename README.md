@@ -33,7 +33,7 @@ npm run assets   # regenerate sprites from assets-src/ (requires Python + Pillow
 
 The game picks its logical resolution from the screen so the zoom is always a whole number (at least 2x on phones) and the canvas fills the screen with no black bars: 422x195 on a 844x390 phone, 427x240 on a 1280x720 desktop. Holding a phone upright shows a "rotate your phone" screen. On iPhone, *Share → Add to Home Screen* opens the game fullscreen without Safari's bars.
 
-## Chapters (v0.6)
+## Chapters (v0.7)
 
 The title screen lets you pick a chapter, or **Continue** where you left off. Progress is saved in the browser.
 
@@ -67,6 +67,17 @@ Based on the third essay, about the months after Siti's death.
 
 The real names of the street kids are not known, so they go by descriptions: Si Ikat Kepala, Si Rambut Merah, Si Kupluk. Petty crime from the essay is mentioned only in the closing narration, never as a game mechanic.
 
+### Chapter 4 — Keluarga (*Family*, about 8 minutes)
+
+Based on the fourth essay, *Rumah yang Nggak Punya Atap* (*A Home Without a Roof*).
+
+1. **Protected.** Si Ikat Kepala checks that nobody is bothering you, and a memory comes back of the day they stood up for you. It is told only as narration.
+2. **Celebrated.** Win a tournament at the internet café, and the gang makes a fuss as if you had won something important.
+3. **The report card.** Si Ikat Kepala walks off to collect your school report for you. Wait on the park bench until he comes back: top three, despite the skipped days.
+4. **Game money.** Back at the café: farm enchant materials, sell them, enchant someone's weapon.
+5. **Sharing.** They refuse the money; you insist until they take it. It becomes rice for everyone.
+6. **Lembang at night.** A campfire in the woods. Sit alone under a tree; Si Kupluk sits next to you and asks nothing, then walks back to the fire with you.
+
 ## Architecture
 
 The story is data, not code. Each map declares its layout, NPCs and interaction scripts built from a small set of actions:
@@ -82,14 +93,14 @@ The story is data, not code. Each map declares its layout, NPCs and interaction 
 | `goto` | Switch scene (internet café, travel card) |
 | `end` | Closing narration and end of chapter |
 
-NPCs appear and leave as the story flags change, without reloading the map. Maps can also declare per-state music (including silence), an ambience tint, the player's walking speed, and NPCs that follow the player, carry a walking aid or wheelchair, or appear as translucent "shadows".
+NPCs appear and leave as the story flags change, without reloading the map. Maps can also declare per-state music (including silence), an ambience tint, warm light sources that glow through it, the player's walking speed, and NPCs that follow the player, carry a walking aid or wheelchair, or appear as translucent "shadows".
 
 A new chapter means a new map file and a new story file. The engine (`WorldScene`) does not change.
 
 ```
 src/story/      story text, action types, tests
 src/maps/       one file per location: layout + NPCs + scripts
-src/scenes/     Title (chapter select), Story (prologue/cards), World (engine), Warnet (café minigame)
+src/scenes/     Title (chapter select), Story (prologue/cards), World (engine), Warnet (café minigame, one text set per chapter)
 src/systems/    GridMap, renderGridMap, DialogueBox, Flags, Music, Sfx
 src/data/       config, Kenney tile indices, music tracks
 assets-src/     source art (Kenney packs, CC0)
@@ -100,7 +111,7 @@ tools/          pack_assets.py
 
 | To change | Edit |
 |---|---|
-| Narration, prologue, ending text | `src/story/chapter1.ts` … `chapter3.ts` |
+| Narration, prologue, ending text | `src/story/chapter1.ts` … `chapter4.ts` |
 | NPC dialogue, quests, choices, objectives | `src/maps/*.ts` (one file per location) |
 | Map layout | the `build*` function in the same file |
 | Background music per location | `src/data/tracks.ts` |

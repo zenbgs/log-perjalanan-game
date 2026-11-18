@@ -4,7 +4,7 @@
  *
  * Aturan gaya (dicek `npm test`). Tanpa titik dua dan tanpa em dash.
  */
-import type { Line } from './types';
+import type { Line, WarnetText } from './types';
 
 export const CHAPTER_ID = 'ch1';
 export const FLAGS_KEY = `lph:${CHAPTER_ID}`;
@@ -70,19 +70,21 @@ export const CARD_MALANG = { label: 'Liburan', title: 'Malang', caption: 'rumah 
 // ---------- warnet (layar monitor) ----------
 
 /** Pesan chat di dalam game online. Ditampilkan gaya IRC, <nama> pesan. */
-export const WARNET = {
+export const WARNET: WarnetText = {
   title: 'GAME ONLINE',
   farmHint: 'farming',
   itemFound: 'Dapat item langka!',
   chatBuy: { from: 'om_kantor', text: 'dek, item itu dijual? om beli ya' },
   sold: 'Terjual. Uang jajan nambah.',
   chatJoki: { from: 'om_helm', text: 'dek jokiin akunku sampai naik level ya, om masuk kerja dulu' },
+  jokiHint: 'jokiin',
+  jokiStatus: 'level om_helm',
   levelUp: 'Level akun om_helm naik!',
   chatThanks: { from: 'om_helm', text: 'mantap dek. besok lagi ya' },
   logout: 'keluar',
   intro: [
     { text: 'Di game online itu aku jadi petani. Itu sebutan buat pemain yang kerjanya ngumpulin item dan uang di dalam game, lalu dijual lagi.' },
-  ] as Line[],
+  ],
 };
 
 // ---------- Malang ----------

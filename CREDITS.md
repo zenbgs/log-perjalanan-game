@@ -27,7 +27,7 @@ Furniture, rugs, plants and wall art for Siti's living room. `public/assets/indo
 
 ## Art — hand-drawn props
 
-`public/assets/props.png`: CRT TV with a PS2, walking frame, wheelchair, toy cooking set, instant noodle packs, a small guitar, rice wrapped in paper. No Kenney pack has these, so they are drawn as ASCII pixel art in `tools/pack_assets.py` using colors sampled from the Kenney sheets. Original work, same license as the code.
+`public/assets/props.png`: CRT TV with a PS2, walking frame, wheelchair, toy cooking set, instant noodle packs, a small guitar, rice wrapped in paper, a campfire. No Kenney pack has these, so they are drawn as ASCII pixel art in `tools/pack_assets.py` using colors sampled from the Kenney sheets. Original work, same license as the code.
 
 Prototypes v0.1 and v0.2 used ansimuz's Legacy Collection (CC0). From v0.3 all art moved to Kenney for a consistent, modern-city look.
 
@@ -43,8 +43,9 @@ All **CC0**, license verified on each page on 2026-11-17. Attribution is not req
 | `music/happy-lullaby.mp3` | Happy Lullaby (song17), cynicmusic | <https://opengameart.org/content/happy-lullaby-song17> | Malang; Siti's living room |
 | `music/small-things.mp3` | Small Things, 3xBlast | <https://opengameart.org/content/small-things> | Chapter ending |
 | `music/snowfall.ogg` | Snowfall (looped), Kistol | <https://opengameart.org/content/snowfall> | Chapter 2, after Siti falls ill, and its ending |
+| `music/small-fire.mp3` | A Small Fire Will Do (Calming Loop), Trex0n (Cal McEachern) | <https://opengameart.org/content/a-small-fire-will-do-calming-loop> | Chapter 4, the campfire night in Lembang, and its ending (license verified 2026-11-18; WAV re-encoded to 96 kbps MP3) |
 
-Author requests: cynicmusic asks for *cynicmusic.com pixelsphere.org* and would like to hear when the music is used. Kistol: "Music by Kistol, but credit is not required."
+Author requests: cynicmusic asks for *cynicmusic.com pixelsphere.org* and would like to hear when the music is used. Kistol: "Music by Kistol, but credit is not required." Trex0n asks for credit to Cal McEachern if possible.
 
 Not used: "A Sweet Story" (Guillermo Guareschi, freetouse.com). Its Free License excludes "Digital Products", which explicitly includes video games.
 

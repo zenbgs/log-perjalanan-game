@@ -25,6 +25,8 @@ export const TRACKS = {
   lullaby: { key: 'bgm-lullaby', path: 'music/happy-lullaby.mp3', gain: 0.9, preload: true },
   /** skrjablin. Chiptune C64 sendu. Di dalam warnet. */
   c64: { key: 'bgm-c64', path: 'music/slow-melancholic-c64.ogg', gain: 2.5, preload: true },
+  /** Trex0n (Cal McEachern). Gitar akustik pelan, suasana api unggun. Malam di Lembang. */
+  fire: { key: 'bgm-small-fire', path: 'music/small-fire.mp3', gain: 2.5, preload: true },
 } as const satisfies Record<string, Track>;
 
 /** Volume dasar per suasana, sebelum dikali gain trek. */

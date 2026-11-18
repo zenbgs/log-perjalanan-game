@@ -4,6 +4,7 @@ import { Flags } from '../systems/Flags';
 import { AFTER_WARNET, CARD_BANDUNG, CARD_MALANG, ENDING, FLAG, MALANG_INTRO, PROLOGUE, SITI_HOUSE, WARNET } from './chapter1';
 import * as C2 from './chapter2';
 import * as C3 from './chapter3';
+import * as C4 from './chapter4';
 import type { Action, Line, MapDef } from './types';
 import { TRACKS } from '../data/tracks';
 
@@ -13,6 +14,7 @@ const CHAPTERS = [
   { order: Object.values(FLAG) as string[], maps: [MAPS.bandung, MAPS.malang] },
   { order: Object.values(C2.FLAG2) as string[], maps: [MAPS['rumah-siti'], MAPS['bandung-siti']] },
   { order: Object.values(C3.FLAG3) as string[], maps: [MAPS['bandung-sepi'], MAPS.jalanan] },
+  { order: Object.values(C4.FLAG4) as string[], maps: [MAPS['bandung-keluarga'], MAPS.lembang] },
 ];
 
 /** Semua baris teks dalam daftar aksi, termasuk prompt & jawaban pilihan. */
@@ -47,6 +49,10 @@ function allLines(): Line[] {
     ...C3.PROLOGUE3.map((text) => ({ text })),
     { text: C3.CARD3.caption },
     ...[C3.SEPI_LINES, C3.DAY1_WARNET, C3.DAY1_HOME, C3.DAY2_WARNET, C3.WARUNG_LINES, C3.DAY2_HOME, C3.DAY3_WARNET, C3.JALAN_INTRO, C3.MEET_LINES, C3.MAKAN_LINES, C3.ENDING3].flat(),
+    ...C4.PROLOGUE4.map((text) => ({ text })),
+    ...[C4.CARD4, C4.CARD_LEMBANG].map((c) => ({ text: c.caption })),
+    ...[C4.K_INTRO, C4.ESKRIM_LINES, C4.TURNAMEN_LINES, C4.RAPOR_WAIT, C4.BAGI_LINES, C4.LEMBANG_INTRO, C4.MURUNG_LINES, C4.DATANG_LINES, C4.TEMANI_LINES, C4.ENDING4, C4.WARNET4.intro].flat(),
+    ...[C4.WARNET4.chatBuy, C4.WARNET4.chatJoki, C4.WARNET4.chatThanks].map((c) => ({ text: c.text })),
     ...PROLOGUE.map((text) => ({ text })),
     ...[CARD_BANDUNG, CARD_MALANG].flatMap((c) => [{ text: c.caption }]),
     ...SITI_HOUSE,
@@ -201,6 +207,46 @@ describe('playthrough', () => {
     play(street, 'ikat', f);
     for (const id of ['om-botak', 'om-helm', 'warung']) play(street, id, f);
     const end = play(street, 'ikat', f);
+    expect(end.some((a) => 'end' in a)).toBe(true);
+  });
+
+  it('Chapter 4 bisa ditamatkan. Dilindungi, dirayakan, berbagi, lalu malam di Lembang', () => {
+    const F = C4.FLAG4;
+    const f = new Set<string>([F.K_INTRO]);
+    const town = MAPS['bandung-keluarga'];
+    const camp = MAPS.lembang;
+    const has = (x: string) => f.has(x);
+
+    expect(play(town, 'warnet', f)).toEqual([]); // dipanggil Si Ikat Kepala dulu
+    expect(f.has(F.TURNAMEN)).toBe(false);
+    play(town, 'ikat', f);
+    expect(f.has(F.LINDUNG)).toBe(true);
+    play(town, 'warnet', f);
+    play(town, 'merah', f);
+    expect(f.has(F.RAYAKAN)).toBe(true);
+
+    const ikat = town.npcs.find((n) => n.id === 'ikat')!;
+    play(town, 'ikat', f);
+    expect(ikat.show?.(has)).toBe(false); // pergi ambil rapor
+    play(town, 'bangku', f);
+    expect(ikat.show?.(has)).toBe(true); // sudah balik
+    play(town, 'ikat', f);
+    expect(f.has(F.RAPOR)).toBe(true);
+
+    expect(play(town, 'warnet', f)).toEqual([{ goto: { scene: 'warnet', data: { run: 'ch4' } } }]);
+    f.add(F.UANG); // dipasang WarnetScene saat keluar
+    const out = play(town, 'ikat', f);
+    expect(f.has(F.BAGI)).toBe(true);
+    expect(out[0] && 'goto' in out[0] && out[0].goto.data).toMatchObject({ next: { data: { map: 'lembang' } } });
+
+    f.add(F.L_INTRO);
+    expect(play(camp, 'api', f)).toEqual([]); // belum waktunya
+    play(camp, 'pohon', f);
+    const temani = camp.npcs.find((n) => n.id === 'kupluk-temani')!;
+    expect(temani.show?.(has)).toBe(true);
+    play(camp, 'kupluk-temani', f);
+    expect(temani.follow?.(has)).toBe(true);
+    const end = play(camp, 'api', f);
     expect(end.some((a) => 'end' in a)).toBe(true);
   });
 

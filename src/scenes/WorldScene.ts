@@ -107,6 +107,23 @@ export class WorldScene extends Phaser.Scene {
       .setAlpha(0.9)
       .setDepth(90_000);
     this.tint = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000).setOrigin(0).setScrollFactor(0).setDepth(80_000).setAlpha(0);
+    // Firelight sits above the night tint so the camp stays warm while the woods go dark.
+    if (this.def.glow?.length && !this.textures.exists('glow')) {
+      const tex = this.textures.createCanvas('glow', 128, 128)!;
+      const ctx = tex.getContext();
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0, 'rgba(255,170,80,0.55)');
+      grad.addColorStop(0.35, 'rgba(255,120,40,0.25)');
+      grad.addColorStop(1, 'rgba(255,90,20,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+      tex.refresh();
+    }
+    for (const g of this.def.glow ?? []) {
+      const p = feet(g);
+      const light = this.add.image(p.x, p.y - 6, 'glow').setDepth(80_001).setBlendMode(Phaser.BlendModes.ADD);
+      this.tweens.add({ targets: light, alpha: 0.75, scale: 0.92, duration: 380, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
     this.shade = this.add.rectangle(0, 0, this.scale.width, this.scale.height, COLOR.bg).setOrigin(0).setScrollFactor(0).setDepth(95_000).setAlpha(0);
     this.dialogue = new DialogueBox(this);
     this.pad = isTouchDevice(this) ? new TouchPad(this, () => this.act()) : undefined;

@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { COLOR, FONT } from '../data/config';
 import { FLAG, FLAGS_KEY, WARNET } from '../story/chapter1';
+import { FLAG4, FLAGS4_KEY, WARNET4 } from '../story/chapter4';
+import type { At, WarnetText } from '../story/types';
 import { DialogueBox } from '../systems/DialogueBox';
 import { Flags } from '../systems/Flags';
 import { Music, MUSIC_VOLUME, TRACKS } from '../systems/Music';
@@ -11,6 +13,19 @@ type Step = 'intro' | 'farm' | 'sell' | 'joki' | 'bye' | 'done';
 
 const ITEMS_NEEDED = 3;
 const JOKI_PRESSES = 4;
+
+/** One visit to the café. Which text to show, which flag to set, where to walk out to. */
+interface WarnetRun {
+  text: WarnetText;
+  flagsKey: string;
+  flag: string;
+  back: { map: string; spawn: At };
+}
+
+const RUNS: Record<string, WarnetRun> = {
+  ch1: { text: WARNET, flagsKey: FLAGS_KEY, flag: FLAG.WARNET_DONE, back: { map: 'bandung', spawn: { tx: 30, ty: 10 } } },
+  ch4: { text: WARNET4, flagsKey: FLAGS4_KEY, flag: FLAG4.UANG, back: { map: 'bandung-keluarga', spawn: { tx: 30, ty: 10 } } },
+};
 
 /**
  * Di dalam warnet. Seluruh layar adalah monitor yang menampilkan "game online".
@@ -33,9 +48,14 @@ export class WarnetScene extends Phaser.Scene {
   private chatLines: string[] = [];
   private chatMaxH = 0;
   private heroX = 0;
+  private run: WarnetRun = RUNS.ch1;
 
   constructor() {
     super('warnet');
+  }
+
+  init(data?: { run?: string }): void {
+    this.run = RUNS[data?.run ?? 'ch1'] ?? RUNS.ch1;
   }
 
   create(): void {
@@ -45,6 +65,7 @@ export class WarnetScene extends Phaser.Scene {
     this.joki = 0;
     this.chatLines = [];
 
+    const WARNET = this.run.text;
     const { width, height } = this.scale;
     this.cameras.main.setBackgroundColor('#120e18').fadeIn(500, 11, 15, 24);
     Music.play(this, TRACKS.c64, MUSIC_VOLUME.world, 1500);
@@ -138,6 +159,7 @@ export class WarnetScene extends Phaser.Scene {
   }
 
   private go(step: Step): void {
+    const WARNET = this.run.text;
     this.step = step;
     if (step === 'sell') this.say(WARNET.chatBuy.from, WARNET.chatBuy.text);
     if (step === 'joki') this.say(WARNET.chatJoki.from, WARNET.chatJoki.text);
@@ -146,22 +168,24 @@ export class WarnetScene extends Phaser.Scene {
   }
 
   private refresh(): void {
+    const WARNET = this.run.text;
     const key = isTouchDevice(this) ? '' : ' [E]';
     const label: Record<Step, string> = {
       intro: '',
       farm: `${WARNET.farmHint}${key}`,
-      sell: `jual ke om_kantor${key}`,
-      joki: `jokiin${key}`,
+      sell: `jual ke ${WARNET.chatBuy.from}${key}`,
+      joki: `${WARNET.jokiHint}${key}`,
       bye: `${WARNET.logout}${key}`,
       done: '',
     };
     this.action.setText(label[this.step]).setVisible(label[this.step] !== '');
     const jokiBar = '#'.repeat(this.joki) + '.'.repeat(JOKI_PRESSES - this.joki);
-    this.status.setText(this.step === 'joki' || this.step === 'bye' ? `level om_helm [${jokiBar}]` : `item ${this.items}/${ITEMS_NEEDED}`);
+    this.status.setText(this.step === 'joki' || this.step === 'bye' ? `${WARNET.jokiStatus} [${jokiBar}]` : `item ${this.items}/${ITEMS_NEEDED}`);
     this.hpBar.width = 40 * (this.hp / 100);
   }
 
   private act(): void {
+    const WARNET = this.run.text;
     if (this.dialogue.isOpen) {
       this.dialogue.advance();
       return;
@@ -188,6 +212,7 @@ export class WarnetScene extends Phaser.Scene {
   }
 
   private farm(): void {
+    const WARNET = this.run.text;
     if (this.items >= ITEMS_NEEDED) return; // waiting for the buyer to show up
     this.swing();
     this.hp = Math.max(0, this.hp - 34);
@@ -215,10 +240,10 @@ export class WarnetScene extends Phaser.Scene {
   private leave(): void {
     if (this.step === 'done') return;
     this.step = 'done';
-    new Flags(FLAGS_KEY).add(FLAG.WARNET_DONE);
+    new Flags(this.run.flagsKey).add(this.run.flag);
     this.cameras.main.fadeOut(700, 11, 15, 24);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () =>
-      this.scene.start('world', { map: 'bandung', spawn: { tx: 30, ty: 10 } }),
+      this.scene.start('world', this.run.back),
     );
   }
 }
